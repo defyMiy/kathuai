@@ -16,6 +16,8 @@ function Login() {
         .then((res) => {
             console.log(res)
             if(res.data.data === 'Login Successfully as admin'){
+                navigate('/Admin_main', {state : {user : username}})
+            } else {
                 navigate('/User_main', {state : {user : username}})
             }
         })

@@ -36,7 +36,7 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/user_main', (req, res) => {
-    db.query("SELECT * FROM numberdata", (err, result) => {
+    db.query("SELECT * FROM numberdata ORDER BY addwhen DESC", (err, result) => {
         if(err) {
             console.log(err)
         } else {
@@ -44,6 +44,66 @@ app.get('/user_main', (req, res) => {
         }
     })
 })
+
+app.get('/admin_main', (req, res) => {
+    db.query("SELECT number, SUM(head) AS head, SUM(tail) AS tail, SUM(toadhead) AS toadhead, SUM(toadtail) AS toadtail, SUM(top) AS top, SUM(bottom) AS bottom, SUM(fourtimes) AS fourtimes FROM numberdata GROUP BY number", (err, result) => {
+        if(err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+app.get('/check_user', (req, res) => {
+    db.query("SELECT * FROM users", (err, result) => {
+        if(err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+app.post('/create_user', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password1
+
+    db.query("INSERT INTO users (username, password, roll) VALUES(?,?,?)",
+    [username, password, 'user'],
+    (err, result) => {
+        if(err) {
+            console.log(err)
+        } else {
+            return res.json({data:'Values Inserted'})
+        }
+    })
+})
+
+app.post('/delete', (req, res) => {
+    const numberId = req.body.id
+    const sql = "DELETE FROM numberdata WHERE id = ?"
+    db.query(sql, [numberId], (err, data) => {
+        if(err) {
+            return res.json(err)
+        } else {
+            return res.json("Number has been deleted")
+        }
+    })
+})
+
+app.post('/delete_user', (req, res) => {
+    const numberId = req.body.id
+    const sql = "DELETE FROM users WHERE id = ?"
+    db.query(sql, [numberId], (err, data) => {
+        if(err) {
+            return res.json(err)
+        } else {
+            return res.json("Number has been deleted")
+        }
+    })
+})
+
 
 app.post('/create', (req, res) => {
     const huainumber = req.body.huainumber
@@ -54,9 +114,9 @@ app.post('/create', (req, res) => {
     const top = req.body.top
     const bottom = req.body.bottom
     const fourtimes = req.body.fourtimes
-    const addby = 'user1'
+    const addby = req.body.addby
     const addwhen = new Date()
-
+    
     db.query("INSERT INTO numberdata (number, head, tail, toadhead, toadtail, top, bottom, fourtimes, addby, addwhen) VALUES(?,?,?,?,?,?,?,?,?,?)",
     [huainumber, head, tail, toadhead, toadtail, top, bottom, fourtimes, addby, addwhen],
     (err, result) => {

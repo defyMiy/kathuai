@@ -1,6 +1,5 @@
 import { React, useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom';
-import { Container, Navbar, Form, Button, Row, Col, Table } from 'react-bootstrap'
+import { Container, Navbar, Form, Button, Row, Col, Table, Nav } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 
@@ -14,57 +13,72 @@ function User_main() {
     const [top, settop] = useState(0)
     const [bottom, setbottom] = useState(0)
     const [fourtimes, setfourtimes] = useState(0)
+    const [user, setUser] = useState('')
 
     const [numberList, setNumberList] = useState([])
 
-    const location = useLocation()
-    const user = location.state.user
-    
     useEffect(() => {
-        fetch('http://localhost:3000/user_main')
+        fetch('http://localhost:5000/user_main')
         .then((response) => response.json())
         .then((data) => setNumberList(data));
     }, []);
 
     const addnumber = () => {
-        axios.post('http://localhost:5000/create', {
-            huainumber: huainumber,
-            head: head,
-            tail: tail,
-            toadhead: toadhead,
-            toadtail: toadtail,
-            top: top,
-            bottom: bottom,
-            fourtimes: fourtimes
-        }).then(() => {
-            setNumberList([
-                ...numberList,
-                {
-                    huainumber: huainumber,
-                    head: head,
-                    tail: tail,
-                    toadhead: toadhead,
-                    toadtail: toadtail,
-                    top: top,
-                    bottom: bottom,
-                    fourtimes: fourtimes
-                }
-            ])
-        })
+        if(huainumber === null || user === '') {
+            alert('กรุณากรอกข้อมูล เลขหวย และ ผู้ใช้งาน')
+        } else {
+            axios.post('http://localhost:5000/create', {
+                huainumber: huainumber,
+                head: head,
+                tail: tail,
+                toadhead: toadhead,
+                toadtail: toadtail,
+                top: top,
+                bottom: bottom,
+                fourtimes: fourtimes,
+                addby: user
+            }).then(() => {
+                setNumberList([
+                    ...numberList,
+                    {
+                        huainumber: huainumber,
+                        head: head,
+                        tail: tail,
+                        toadhead: toadhead,
+                        toadtail: toadtail,
+                        top: top,
+                        bottom: bottom,
+                        fourtimes: fourtimes,
+                        addby: user
+                    }
+                ])
+            })
+        }
+        
+    }
+
+    const handleDelete = async(id) => {
+        try{
+            await axios.post('http://localhost:5000/delete', {id: id})
+            window.location.reload()
+        } catch(err) {
+            console.log(err)
+        }
     }
 
     return (
         <div>
             {/* navbar */}
             <Container>
-                <Navbar className="bg-light">
+                <Navbar collapseOnSelect expand="sm" className="bg-body-tertiary">
                     <Container>
                         <Navbar.Brand>โปรแกรมคัดหวย</Navbar.Brand>
-                        <Navbar.Toggle />
-                        <Navbar.Collapse className="justify-content-end">
-                            <Navbar.Text>
-                                Signed in as: {user}
-                            </Navbar.Text>
+                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                        <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className="me-auto"></Nav>
+                        <Nav>
+                            <Nav.Link href="/">Logout</Nav.Link>
+                        </Nav>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
@@ -121,9 +135,16 @@ function User_main() {
                             }}/>
                         </Form.Group>
                     </Row>
-                    <Container className='d-flex justify-content-center'>
-                        <Button type="submit" onClick={addnumber}>เพิ่ม</Button>
-                    </Container>
+                    <Row>
+                        <Form.Group as={Col} controlId="user">
+                            <Form.Control required type="text" placeholder="Username" onChange={(event) => {
+                                setUser(event.target.value)
+                            }}/>
+                        </Form.Group>
+                        <Form.Group as={Col} className='d-flex justify-content-center'>
+                            <Button variant="success" type="submit" onClick={addnumber}>เพิ่ม</Button>
+                        </Form.Group>
+                    </Row>
                 </Form>
             </Container>
 
@@ -140,7 +161,9 @@ function User_main() {
                             <th>บน</th>
                             <th>ล่าง</th>
                             <th>4 ครั้ง</th>
+                            <th>เพิ่มโดย</th>
                             <th>วันที่เพิ่ม</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody >
@@ -154,7 +177,11 @@ function User_main() {
                                 <td>{item.top}</td>
                                 <td>{item.bottom}</td>
                                 <td>{item.fourtimes}</td>
+                                <td>{item.addby}</td>
                                 <td>{item.addwhen}</td>
+                                <td>
+                                    <Button variant="danger" onClick={() => handleDelete(item.id)}>ลบ</Button>
+                                </td>
                             </tr>
                         ))}
                         </tbody>
