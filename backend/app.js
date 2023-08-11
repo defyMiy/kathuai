@@ -46,7 +46,14 @@ app.get('/user_main', (req, res) => {
 })
 
 app.get('/admin_main', (req, res) => {
-    db.query("SELECT number, SUM(head) AS head, SUM(tail) AS tail, SUM(toadhead) AS toadhead, SUM(toadtail) AS toadtail, SUM(top) AS top, SUM(bottom) AS bottom, SUM(fourtimes) AS fourtimes FROM numberdata GROUP BY number", (err, result) => {
+    // const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    // const d = new Date();
+    // const currentMonth = monthNames[d.getMonth()]
+    // currentMonth = currentMonth.slice(0).slice(-1)
+
+    db.query("SELECT number, SUM(head) AS head, SUM(tail) AS tail, SUM(toadhead) AS toadhead, SUM(toadtail) AS toadtail, SUM(top) AS top, SUM(bottom) AS bottom, SUM(fourtimes) AS fourtimes FROM numberdata GROUP BY number", 
+    // [currentMonth],
+    (err, result) => {
         if(err) {
             console.log(err)
         } else {

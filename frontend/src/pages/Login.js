@@ -17,8 +17,10 @@ function Login() {
             console.log(res)
             if(res.data.data === 'Login Successfully as admin'){
                 navigate('/Admin_main', {state : {user : username}})
-            } else {
+            } else if(res.data.data === 'Login Successfully as user'){
                 navigate('/User_main', {state : {user : username}})
+            } else {
+                alert('ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง')
             }
         })
         .catch(err => console.log(err))

@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react'
 import { Container, Navbar, Form, Button, Row, Col, Table, Nav } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 function User_main() {
 
@@ -54,7 +55,6 @@ function User_main() {
                 ])
             })
         }
-        
     }
 
     const handleDelete = async(id) => {
