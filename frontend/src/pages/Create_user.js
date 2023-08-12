@@ -34,7 +34,7 @@ function Create_user() {
         <div>
             {/* navbar */}
             <Container>
-                <Navbar collapseOnSelect expand="sm" className="bg-body-tertiary">
+                <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
                     <Container>
                         <Navbar.Brand href="/Admin_main">โปรแกรมคัดหวย</Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -42,6 +42,8 @@ function Create_user() {
                         <Nav className="me-auto">
                             <Nav.Link href="/Create_user">สร้างผู้ใช้งาน</Nav.Link>
                             <Nav.Link href="/Check_user">ดูข้อมูลผู้ใช้งาน</Nav.Link>
+                            <Nav.Link href="/User_main/admin">กรอกข้อมูล</Nav.Link>
+                            <Nav.Link href="/Record">บันทึกการกรอกข้อมูล</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link href="/">Logout</Nav.Link>
@@ -53,7 +55,7 @@ function Create_user() {
 
             <Container className='position-absolute top-50 start-50 translate-middle bg-light p-5'>
                 <Form onSubmit={handleSubmit}>
-                    <h3 className='d-flex justify-content-center p-3'>สมัครผู้ใช้งาน</h3>
+                    <h3 className='d-flex justify-content-center p-3'>สร้างผู้ใช้งาน</h3>
                     <Form.Group className="mb-3">
                         <Form.Label>Username (มากสุด 10 ตัวอักษร)</Form.Label>
                         <Form.Control required type="text" placeholder="Username" maxLength={10} onChange = { e => setUsername(e.target.value)}/>

@@ -18,7 +18,7 @@ function Login() {
             if(res.data.data === 'Login Successfully as admin'){
                 navigate('/Admin_main', {state : {user : username}})
             } else if(res.data.data === 'Login Successfully as user'){
-                navigate('/User_main', {state : {user : username}})
+                navigate('/User_main/' + username, {state : {user : username}})
             } else {
                 alert('ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง')
             }

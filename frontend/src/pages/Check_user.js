@@ -26,7 +26,7 @@ function Check_user() {
         <div>
             {/* navbar */}
             <Container>
-                <Navbar collapseOnSelect expand="sm" className="bg-body-tertiary">
+                <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
                     <Container>
                         <Navbar.Brand href="/Admin_main">โปรแกรมคัดหวย</Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -34,6 +34,8 @@ function Check_user() {
                         <Nav className="me-auto">
                             <Nav.Link href="/Create_user">สร้างผู้ใช้งาน</Nav.Link>
                             <Nav.Link href="/Check_user">ดูข้อมูลผู้ใช้งาน</Nav.Link>
+                            <Nav.Link href="/User_main/admin">กรอกข้อมูล</Nav.Link>
+                            <Nav.Link href="/Record">บันทึกการกรอกข้อมูล</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link href="/">Logout</Nav.Link>
@@ -51,10 +53,11 @@ function Check_user() {
                             <th>username</th>
                             <th>password</th>
                             <th>roll</th>
+                            <th>ลบ</th>
                         </tr>
                     </thead>
                     <tbody >
-                        {userList.map((item) => (
+                        {userList.filter((item) => !item.username.includes("admin")).map((item) => (
                             <tr key={item.id}>
                                 <td>{item.username}</td>
                                 <td>{item.password}</td>

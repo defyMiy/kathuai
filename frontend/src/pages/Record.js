@@ -4,17 +4,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import Swal from 'sweetalert2'
 
-function Admin_main() {
+
+function Record() {
 
     const [numberList, setNumberList] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:5000/admin_main')
+        fetch('http://localhost:5000/user_main')
         .then((response) => response.json())
         .then((data) => setNumberList(data));
     }, []);
-
-    const [search, setSearch] = useState('')
 
     const handleDelete = async() => {
         Swal.fire({
@@ -38,6 +37,9 @@ function Admin_main() {
             }
         })
     }
+
+    const [search, setSearch] = useState('')
+
 
     return (
         <div>
@@ -69,7 +71,7 @@ function Admin_main() {
                         <th>
                             <Form>
                                 <InputGroup className='my-3'>
-                                    <Form.Control placeholder='ค้นหาเลข' onChange={(e) => setSearch(e.target.value)}/>
+                                    <Form.Control placeholder='ค้นหา' onChange={e => setSearch(e.target.value)}/>
                                 </InputGroup>
                             </Form>
                         </th>
@@ -78,7 +80,6 @@ function Admin_main() {
                         </th>
                     </tr>
                 </Table>
-                
             </Container>
 
             {/* show data */}
@@ -94,11 +95,13 @@ function Admin_main() {
                             <th>บน</th>
                             <th>ล่าง</th>
                             <th>4 ครั้ง</th>
+                            <th>เพิ่มโดย</th>
+                            <th>วันที่เพิ่ม</th>
                         </tr>
                     </thead>
-                    <tbody >
+                    <tbody>
                         {numberList.filter((item) => {
-                            return search === '' ? item : item.number.includes(search)
+                            return search === '' ? item : item.number.includes(search) || item.addby.includes(search)
                         }).map((item) => (
                             <tr key={item.id}>
                                 <th>{item.number}</th>
@@ -109,13 +112,16 @@ function Admin_main() {
                                 <td>{item.top}</td>
                                 <td>{item.bottom}</td>
                                 <td>{item.fourtimes}</td>
+                                <td>{item.addby}</td>
+                                <td>{item.addwhen}</td>
                             </tr>
                         ))}
-                    </tbody>
+                        </tbody>
                 </Table>
             </Container>
         </div>
+
     )
 }
 
-export default Admin_main
+export default Record

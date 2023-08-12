@@ -3,6 +3,7 @@ import { Container, Navbar, Form, Button, Row, Col, Table, Nav } from 'react-boo
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { useParams, Link } from 'react-router-dom';
 
 function User_main() {
 
@@ -14,9 +15,9 @@ function User_main() {
     const [top, settop] = useState(0)
     const [bottom, setbottom] = useState(0)
     const [fourtimes, setfourtimes] = useState(0)
-    const [user, setUser] = useState('')
 
     const [numberList, setNumberList] = useState([])
+    const param = useParams()
 
     useEffect(() => {
         fetch('http://localhost:5000/user_main')
@@ -25,7 +26,7 @@ function User_main() {
     }, []);
 
     const addnumber = () => {
-        if(huainumber === null || user === '') {
+        if(huainumber === null) {
             alert('กรุณากรอกข้อมูล เลขหวย และ ผู้ใช้งาน')
         } else {
             axios.post('http://localhost:5000/create', {
@@ -37,7 +38,7 @@ function User_main() {
                 top: top,
                 bottom: bottom,
                 fourtimes: fourtimes,
-                addby: user
+                addby: param.id
             }).then(() => {
                 setNumberList([
                     ...numberList,
@@ -50,7 +51,7 @@ function User_main() {
                         top: top,
                         bottom: bottom,
                         fourtimes: fourtimes,
-                        addby: user
+                        addby: param.id
                     }
                 ])
             })
@@ -58,12 +59,26 @@ function User_main() {
     }
 
     const handleDelete = async(id) => {
-        try{
-            await axios.post('http://localhost:5000/delete', {id: id})
-            window.location.reload()
-        } catch(err) {
-            console.log(err)
-        }
+        Swal.fire({
+            title: 'ลบข้อมูล',
+            text: "คุณต้องการจะลบข้อมูลนี้ใช่ไหม",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ใช่',
+            cancelButtonText: 'ยกเลิก',
+            allowOutsideClick: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+                try{
+                    axios.post('http://localhost:5000/delete', {id: id})
+                    window.location.reload()
+                } catch(err) {
+                    console.log(err)
+                }
+            }
+        })    
     }
 
     return (
@@ -75,8 +90,9 @@ function User_main() {
                         <Navbar.Brand>โปรแกรมคัดหวย</Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto"></Nav>
+                        <Nav className="me-auto">{param.id === "admin" ? <Link to={"/Admin_main"}>กลับสู่หน้าแอดมิน</Link> : console.log(param.id)}</Nav>
                         <Nav>
+                            <Navbar.Text>Sign in as : {param.id}</Navbar.Text>
                             <Nav.Link href="/">Logout</Nav.Link>
                         </Nav>
                         </Navbar.Collapse>
@@ -136,13 +152,8 @@ function User_main() {
                         </Form.Group>
                     </Row>
                     <Row>
-                        <Form.Group as={Col} controlId="user">
-                            <Form.Control required type="text" placeholder="Username" onChange={(event) => {
-                                setUser(event.target.value)
-                            }}/>
-                        </Form.Group>
                         <Form.Group as={Col} className='d-flex justify-content-center'>
-                            <Button variant="success" type="submit" onClick={addnumber}>เพิ่ม</Button>
+                            <Button variant="success" type="submit" size='lg' onClick={addnumber}>เพิ่ม</Button>
                         </Form.Group>
                     </Row>
                 </Form>
@@ -150,14 +161,14 @@ function User_main() {
 
             {/* show data */}
             <Container>
-                <Table>
+                <Table striped bordered>
                     <thead>
                         <tr>
                             <th>เลข</th>
                             <th>หัว</th>
                             <th>ท้าย</th>
                             <th>โต้ดหัว</th>
-                            <th>โต้ตท้าย</th>
+                            <th>โต้ดท้าย</th>
                             <th>บน</th>
                             <th>ล่าง</th>
                             <th>4 ครั้ง</th>
@@ -167,7 +178,7 @@ function User_main() {
                         </tr>
                     </thead>
                     <tbody >
-                        {numberList.map((item) => (
+                        {numberList.filter((item) => item.addby.includes(param.id)).map((item) => (
                             <tr key={item.id}>
                                 <th>{item.number}</th>
                                 <td>{item.head}</td>
